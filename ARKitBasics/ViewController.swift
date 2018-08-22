@@ -91,6 +91,18 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             extentGeometry.height = CGFloat(planeAnchor.extent.z)
             plane.extentNode.simdPosition = planeAnchor.center
         }
+        
+        // Update the plane's classification and the text position
+        if #available(iOS 12.0, *),
+            let classificationNode = plane.classificationNode,
+            let classificationGeometry = classificationNode.geometry as? SCNText {
+            let currentClassification = planeAnchor.classification.description
+            if let oldClassification = classificationGeometry.string as? String, oldClassification != currentClassification {
+                classificationGeometry.string = currentClassification
+                classificationNode.centerAlign()
+            }
+        }
+        
     }
 
     // MARK: - ARSessionDelegate
