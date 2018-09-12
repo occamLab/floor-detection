@@ -131,3 +131,4 @@ func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor:
 
 [11]:https://developer.apple.com/documentation/arkit/arscnviewdelegate/2865799-renderer
 
+On iPhone XS, iPhone XS Max, and iPhone XR, ARKit can also classify detected planes, reporting which kind of common real-world surface that plane represents (for example, a table, floor, or wall). In this example, the [`renderer(_:didUpdate:for:)`][11] method also displays and updates a text label to show that information.
