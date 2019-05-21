@@ -1,17 +1,15 @@
-# Building Your First AR Experience
+# Tracking and Visualizing Planes
 
-Create an app that runs an AR session and uses plane detection to place 3D content using SceneKit.   
+Detect surfaces in the physical environment and visualize their shape and location in 3D space.     
 
 ## Overview
 
-This sample app runs an [ARKit][0] world tracking session with content displayed in a SceneKit view. To demonstrate plane detection, the app visualizes both the estimated shape of and a bounding rectangle for each detected [`ARPlaneAnchor`][14] object. On supported devices, ARKit can recognize many types of real-world surfaces, so the app also labels each detected plane with identifying text.
+This sample app runs an [ARKit][0] world tracking session with content displayed in a SceneKit view. To demonstrate plane detection, the app visualizes the estimated shape of each detected [`ARPlaneAnchor`][14] object, and a bounding rectangle for it. On supported devices, ARKit can recognize many types of real-world surfaces, so the app also labels each detected plane with identifying text.
 
 [0]:https://developer.apple.com/documentation/arkit
 [14]:https://developer.apple.com/documentation/arkit/arplaneanchor
 
-## Getting Started
-
-ARKit requires iOS 11 and a device with an A9 (or later) processor. ARKit is not available in iOS Simulator. Building the sample code requires Xcode 9 or later.
+- Note: ARKit requires an iOS device with an A9 or later processor. ARKit is not available in iOS Simulator.
 
 ## Configure and Run the AR Session
 
