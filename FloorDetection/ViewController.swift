@@ -166,10 +166,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         if pins.count == 2 {
             let result1 = getFloorIntersection(from: pins[0])
             let result2 = getFloorIntersection(from: pins[1])
-            
             var shareFloor = false
             var gotMatch = false
-            let epsilon: Float = 0.2
+            let epsilon: Float = 0.05
             for r1 in result1 {
                 makeIntersectNode(from: pins[0], onto: r1)
                 for r2 in result2 {
@@ -184,6 +183,17 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
                         let pos2 = simd_float3(r2.worldTransform.columns.3.x,
                                                r2.worldTransform.columns.3.y,
                                                r2.worldTransform.columns.3.z)
+                        
+                        
+                        // Detect if the pins are too far apart
+                        let diff = pos1 - pos2
+                        let dist = length(diff)
+                        if dist > 1.5 {
+                            shareFloor = false
+                            label.text = "Too far apart (\(dist) m)"
+                            print("Too far apart (\(dist) m)")
+                            break
+                        }
                         
                         // Create line node between pin projections
                         let hitTestNode = lineNode(from: pos1, to: pos2)
@@ -208,7 +218,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
                         }
                         
                         // Detect if the ray from pos2 to pos1 crosses a wall
-                        let diff = pos1 - pos2
                         let raycastquery = ARRaycastQuery(origin: pos2 + delta, direction: diff, allowing: .existingPlaneGeometry, alignment: .vertical)
                         let raycastResults = sceneView.session.raycast(raycastquery)
                         if raycastResults.count == 0 {
@@ -224,7 +233,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
                             let intersection = simd_float3(wall.worldTransform.columns.3.x,
                                                            wall.worldTransform.columns.3.y,
                                                            wall.worldTransform.columns.3.z)
-                            if length(intersection - pos2) < length(diff) {
+                            if length(intersection - pos2) < dist {
+                                makeIntersectNode(from: pins[0], onto: wall, UIColor.cyan)
                                 shareFloor = false
                                 label.text = "Hit wall"
                                 print("Hit wall")
@@ -266,13 +276,13 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         return sceneView.session.raycast(raycastquery)
     }
     
-    func makeIntersectNode(from pin: SCNNode, onto result: ARRaycastResult){
+    func makeIntersectNode(from pin: SCNNode, onto result: ARRaycastResult, _ color: UIColor = UIColor.purple){
         let smallBox = SCNBox(width: 0.05, height: 0.05, length: 0.05, chamferRadius: 0)
         let intersectNode = SCNNode()
         intersectNode.geometry = smallBox
         intersectNode.name = "Intersection"
         intersectNode.transform = SCNMatrix4(matrix_multiply(simd_float4x4(pin.transform).inverse, result.worldTransform))
-        intersectNode.geometry?.firstMaterial?.diffuse.contents = UIColor.purple
+        intersectNode.geometry?.firstMaterial?.diffuse.contents = color
         pin.addChildNode(intersectNode)
     }
     
