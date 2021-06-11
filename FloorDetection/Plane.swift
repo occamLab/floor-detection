@@ -17,6 +17,7 @@ class Plane: SCNNode {
     let meshNode: SCNNode
     let extentNode: SCNNode
     var classificationNode: SCNNode?
+    var centerNode: SCNNode = SCNNode()
     
     /// - Tag: VisualizePlane
     init(anchor: ARPlaneAnchor, in sceneView: ARSCNView) {
@@ -49,10 +50,15 @@ class Plane: SCNNode {
         addChildNode(meshNode)
         addChildNode(extentNode)
         
+        centerNode = self.makeCenterNode()
+        centerNode.transform = SCNMatrix4(anchor.transform)
+        sceneView.scene.rootNode.addChildNode(centerNode)
+        
         // Display the plane's classification, if supported on the device
         if #available(iOS 12.0, *), ARPlaneAnchor.isClassificationSupported {
             let classification = anchor.classification.description
             let textNode = self.makeTextNode(classification)
+            
             classificationNode = textNode
             // Change the pivot of the text node to its center
             textNode.centerAlign()
@@ -105,5 +111,14 @@ class Plane: SCNNode {
         textNode.simdScale = float3(0.0005)
         
         return textNode
+    }
+    
+    private func makeCenterNode() -> SCNNode {
+        let smallBox = SCNBox(width: 0.05, height: 0.05, length: 0.05, chamferRadius: 0)
+        let centerNode = SCNNode(geometry: smallBox)
+        centerNode.name = "Plane Center"
+        centerNode.geometry?.firstMaterial?.diffuse.contents = UIColor.magenta
+        
+        return centerNode
     }
 }

@@ -99,8 +99,10 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         if let extentGeometry = plane.extentNode.geometry as? SCNPlane {
             extentGeometry.width = CGFloat(planeAnchor.extent.x)
             extentGeometry.height = CGFloat(planeAnchor.extent.z)
-            plane.extentNode.simdPosition = planeAnchor.center
+            plane.extentNode.simdPosition = planeAnchor.center 
         }
+        
+        plane.centerNode.transform = SCNMatrix4(anchor.transform)
         
         // Update the plane's classification and the text position
         if #available(iOS 12.0, *),
@@ -188,7 +190,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
                         // Detect if the pins are too far apart
                         let diff = pos1 - pos2
                         let dist = length(diff)
-                        if dist > 1.5 {
+                        if dist > 2 {
                             shareFloor = false
                             label.text = "Too far apart (\(dist) m)"
                             print("Too far apart (\(dist) m)")
