@@ -193,12 +193,13 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             let result2 = getFloorIntersection(from: pins[1])
             var shareFloor = false
             var gotMatch = false
+            let heightTolerance: Float = 0.20
             let epsilon: Float = 0.05
             for r1 in result1 {
                 makeIntersectNode(from: pins[0], onto: r1)
                 for r2 in result2 {
                     makeIntersectNode(from: pins[1], onto: r2)
-                    if r1.anchor == r2.anchor {
+                    if abs(r1.worldTransform.columns.3.y - r2.worldTransform.columns.3.y) < heightTolerance {
                         gotMatch = true
                         // Get positions of pin projections
                         let delta = simd_float3(0, epsilon, 0)
