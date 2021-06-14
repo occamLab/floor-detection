@@ -18,6 +18,7 @@ class Plane: SCNNode {
     let extentNode: SCNNode
     var classificationNode: SCNNode?
     var centerNode: SCNNode? = nil
+    let anchor: ARPlaneAnchor
     
     /// - Tag: VisualizePlane
     init(anchor: ARPlaneAnchor, in sceneView: ARSCNView) {
@@ -25,6 +26,8 @@ class Plane: SCNNode {
         #if targetEnvironment(simulator)
         #error("ARKit is not supported in iOS Simulator. Connect a physical iOS device and select it as your Xcode run destination, or select Generic iOS Device as a build-only destination.")
         #else
+        
+        self.anchor = anchor
 
         // Create a mesh to visualize the estimated shape of the plane.
         guard let meshGeometry = ARSCNPlaneGeometry(device: sceneView.device!)

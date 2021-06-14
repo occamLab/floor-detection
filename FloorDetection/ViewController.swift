@@ -102,7 +102,30 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             plane.extentNode.simdPosition = planeAnchor.center 
         }
         
+        // Update anchor node position (this should not move it)
         plane.centerNode?.transform = SCNMatrix4(anchor.transform)
+        
+        // Change color of plane if it is concave
+        let points = plane.anchor.geometry.boundaryVertices
+        var direction: Bool? = nil
+        var isConvex = true
+        for index in 0..<points.count {
+            let p1 = index == 0 ? points[points.count - 1] : points[index - 1]
+            let p2 = points[index]
+            let p3 = index == points.count - 1 ? points[0] : points[index + 1]
+            let d1 = p2 - p1
+            let d2 = p3 - p2
+            let ycross = -d1.x * d2.z + d1.z * d2.x
+            if direction == nil {
+                direction = ycross > 0
+                continue
+            }
+            isConvex = direction == (ycross > 0)
+            if !isConvex {
+                break
+            }
+        }
+        plane.meshNode.geometry?.firstMaterial?.diffuse.contents = isConvex ? UIColor.yellow : UIColor.magenta
         
         // Update the plane's classification and the text position
         if #available(iOS 12.0, *),
