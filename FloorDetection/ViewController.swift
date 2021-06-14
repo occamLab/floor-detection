@@ -102,7 +102,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             plane.extentNode.simdPosition = planeAnchor.center 
         }
         
-        plane.centerNode.transform = SCNMatrix4(anchor.transform)
+        plane.centerNode?.transform = SCNMatrix4(anchor.transform)
         
         // Update the plane's classification and the text position
         if #available(iOS 12.0, *),

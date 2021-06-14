@@ -17,7 +17,7 @@ class Plane: SCNNode {
     let meshNode: SCNNode
     let extentNode: SCNNode
     var classificationNode: SCNNode?
-    var centerNode: SCNNode = SCNNode()
+    var centerNode: SCNNode? = nil
     
     /// - Tag: VisualizePlane
     init(anchor: ARPlaneAnchor, in sceneView: ARSCNView) {
@@ -50,9 +50,12 @@ class Plane: SCNNode {
         addChildNode(meshNode)
         addChildNode(extentNode)
         
+        
         centerNode = self.makeCenterNode()
-        centerNode.transform = SCNMatrix4(anchor.transform)
-        sceneView.scene.rootNode.addChildNode(centerNode)
+        if let centerNode = centerNode {
+            centerNode.transform = SCNMatrix4(anchor.transform)
+            sceneView.scene.rootNode.addChildNode(centerNode)
+        }
         
         // Display the plane's classification, if supported on the device
         if #available(iOS 12.0, *), ARPlaneAnchor.isClassificationSupported {
@@ -113,7 +116,10 @@ class Plane: SCNNode {
         return textNode
     }
     
-    private func makeCenterNode() -> SCNNode {
+    private func makeCenterNode() -> SCNNode? {
+        if centerNode == nil {
+            return nil
+        }
         let smallBox = SCNBox(width: 0.05, height: 0.05, length: 0.05, chamferRadius: 0)
         let centerNode = SCNNode(geometry: smallBox)
         centerNode.name = "Plane Center"
